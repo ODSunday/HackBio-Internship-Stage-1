@@ -21,7 +21,7 @@ wget https://raw.githubusercontent.com/HackBio-Internship/2025_project_collectio
 bash SA_Polony_100_download.sh                   # Downloads the data from the script provided.
 ls 						                         # Confirms downloaded files.
 mkdir raw_data                                   # Creates a new folder for the data.
-mv *.fastg.gz raw_data/                          # Moves all the data (ending with the ".fastg.gz" suffix) into to 'raw_data' folder. 
+mv *.fastg.gz raw_data/                          # Moves all the data (ending with the '.fastg.gz' suffix) into to 'raw_data' folder. 
 
 ls -l raw_data | grep ^- | wc -l                 # Confirms the presence and numbers of the files in the 'raw_data' folder.
 # ls -l list the files with their details; grep ^- filters regular files only, without folder; wc -l counts number lines, which is equivalent to the number of files in the folder.
@@ -40,22 +40,22 @@ done
 # ls raw_data/*_1.fastq.gz lists only all forward read files, to forestall duplications;
 # sed 's/_1.fastq.gz//' removes the _1.fastq.gz suffix to obtain only the base names; shuf -n 50 randomly selects 50 unique base names.
 # The for loop then iterates over each of the selected base name, and
-# cp "${base}_1.fastq.gz" sample_data/ copies the corresponding forward read of the randomly selected sample into the sample_data folder, while
-# cp "${base}_2.fastq.gz" sample_data/ copies the corresponding reverse read into the folder.
+# cp "${base_name}_1.fastq.gz" sample_data/ copies the corresponding forward read of the randomly selected sample into the sample_data folder, while
+# cp "${base_name}_2.fastq.gz" sample_data/ copies the corresponding reverse read into the folder.
 
 ls -l selected_samples | grep ^- | wc -l          # Confirms the presence and numbers of the files in the 'selected_samples' folder.
 ```
 #### 2. Quality control
 It is important to check the quality of the data. The quality control was perfomed as follows:
 ```bash
-mkdir qc                                                           # Creates a new folder named "qc" for the QC reports/outputs.
+mkdir qc                                                           # Creates a new folder named 'qc' for the QC reports/outputs.
 
 for sample in selected_samples/*_1.fastq.gz selected_samples/*_2.fastq.gz; do
     fastqc "$sample" -o qc/
 done                                                               # The command runs FastQC on all forward and reverse reads of the selected samples and outputs the QC reports to the "qc" folder.
 
 
-mkdir multiqc_reports                                              # Creates a new folder named "multiqc_reports" for the aggregated QC reports.
+mkdir multiqc_reports                                              # Creates a new folder named 'multiqc_reports' for the aggregated QC reports.
 
 multiqc qc/ -o multiqc_reports/                                    # Aggregates the QC reports and outputs them to the 'multiqc_reports' folder. 
 ```
