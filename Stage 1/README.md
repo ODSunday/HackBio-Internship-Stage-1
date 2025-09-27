@@ -2,14 +2,14 @@
 ### INTRODUCTION
 South Africa faced a serious public health problem in early 2017 due to a foodborne infection traced to polony, a processed cold meats. To confirm the identity and resistance profile of the infectious organism, whole genome sequencing (WGS) analysis becomes highly indispensable. Hence, this current project analyses WGS data from 100 bacterial isolates collected during the 2017–2018 South African outbreak, to:  
 - Confirm the identity of the organism;
-- Determine the antimicrobial resistance (AMR) profile of these pathogens.
-- Detect the presence of any toxin accelerating the death rate.
-- Suggest possible antibiotics or treatment options for managing the cases.
+- Determine the organism's antimicrobial resistance (AMR) profile.
+- Detect the presence of any toxin accelerating death rate.
+- Suggest possible antibiotics or treatment options for managing the infection.
 
 ### METHOD
 #### 1a. Downloading the datasets
 The script containing the datasets was provided at: `https://raw.githubusercontent.com/HackBio-Internship/2025_project_collection/refs/heads/main/SA_Polony_100_download.sh`. 
-The script and the datasets were downloaded and saved properly using the following commands:
+The script (`SA_Polony_100_download.sh`) and the datasets were downloaded and saved properly using the following commands:
 ```bash
 wget https://raw.githubusercontent.com/HackBio-Internship/2025_project_collection/refs/heads/main/SA_Polony_100_download.sh   # Downloads the script provided.
 
@@ -142,5 +142,122 @@ done
 ```
 Running the `spades.py` command: 
 ```bash
-bash assembler.sh                                               # Performs de novo genome assembly with `Spades.py`.
+bash assembler.sh                                                # Performs de novo genome assembly with `Spades.py`.
 ```
+The genome was successfully assembled, and the quality of the assembly was assessed with `quast.py` in the next section.
+### 5. Checking assembly quality with `quast.py`
+```bash
+nano quast.sh                                                    # Writes the script containing the next set of commands.
+```
+
+```bash
+#!/bin/bash
+
+mkdir quast_reports
+
+for sample_dir in assembly/*/; do                                # Loops through each sample directory within assembly folder.
+    sample=$(basename "$sample_dir")                             # Extracts the base name (sample name) of the sample directory.
+    contigs_file="${sample_dir}contigs.fasta"                    # Constructs the full path to the contigs.fasta file.
+
+    if [[ -f "$contigs_file" ]]; then                            # Checks for the presence of the contigs.fasta file before running 'quast'.
+        quast.py -o "quast_reports/${sample}_quast" "$contigs_file"
+    else
+        echo "Warning: File not found for sample ${sample}: $contigs_file"
+    fi
+done
+```
+```bash
+bash quast.sh                                                     # Runs quast. 
+```
+```bash
+ls -l quast_reports | grep ^d | wc -l                             # Confirm the directories in the `quast_reports` folder.
+```
+To be able to assess the `quast` reports at a glance for all the samples, combined `quast` reports were aggregated as follows:
+```bash
+nano quast_combined.sh                                            # Writes the script containing the next set of commands.
+```
+```bash
+#!/bin/bash
+
+# Make an output directory.
+mkdir combined_quast_reports
+
+# Define an array to hold the paths to the contigs.fasta files.
+declare -a samples=()
+
+# Populate the array with paths to each contigs.fasta file.
+for sample_dir in assembly/*/; do
+    samples+=("${sample_dir}contigs.fasta")
+done
+
+# Run quast on all samples at a go, using the array.
+quast.py -o combined_quast_reports "${samples[@]}"
+```
+```bash
+bash quast_combined.sh                                               # Runs quast.
+```
+### 6. Running blast on a selected sample to identity the organism 
+To conserve time and other resources, BLAST was performed on a selected sample to confirm the identity of the organism. The sample was selected based on the best N50 value, which directly relates to other quality metrics being in good shape.
+```bash
+cd quast_reports                                                       # Navigates to the `quast` output directory
+```
+```bash                                                      
+nano select_sample.sh                                                  # Writes the script for sample selection.
+```
+```bash
+#!/bin/bash
+
+best_sample=$(for dir in */; do                                         # Loops through each directory in the current folder (quast_reports).
+    n50_value=$(grep "N50" "$dir/report.txt" | awk '{print $NF}');      # Extracts N50 value from the report.txt file and stores it in the variable n50_value.
+    echo "$n50_value $dir";                                             # Prints the N50 value along with the directory name.
+done | sort -n | tail -n 1 | awk '{print $2}')                          # Sort the output numerically and and selects the last entry (highest N50).
+echo "Selected sample for BLAST based on N50: $best_sample"             # Extracts just the directory name.
+```
+The sample with the base name `SRR27013333` was selected.
+```bash
+cd ../                                                                  # Returns to the prevoius working directory.
+```
+```bash
+nano blast.sh                                                           # Writes the script for BLAST.
+```
+```bash
+#!/bin/bash
+
+output_folder="blast_report"                                            # Defines output directory name.
+
+mkdir -p "$output_folder"                                               # Creates the output directory.
+
+# Define the path to the spades.py output directory
+spades_output="assembly" 
+
+# Define the path to the contig file
+contig_file="$spades_output/SRR27013333_Genome_Sequencing_of_Listeria_monocytogenes_SA_outbreak_2017_spades/contigs.fasta"
+
+# Confirm the existence of the contig file
+if [[ ! -f "$contig_file" ]]; then
+    echo "Contig file NOT FOUND!: $contig_file"
+    exit 1
+else
+    echo "Contig file EXISTS!: $contig_file"
+fi
+
+# Extract the first 100 contigs (i.e., extract the first 202 lines from the fasta file, since each contig consists of 2 lines: header + sequence).
+head -n 202 "$contig_file" | awk 'NR % 2 == 1 {print; getline; print}' > extracted_contigs.fasta
+
+echo "Contigs extracted SUCCESSFULLY!"
+
+# Run BLAST
+echo "Running BLAST to confirm organism's identity..."
+
+blastn -query extracted_contigs.fasta -db nt -out "$output_folder/blast_results.tsv" \
+       -outfmt "6 std stitle" \
+       -evalue 1e-5 -remote -max_target_seqs 10
+
+echo "BLAST run successfully!"
+
+# Confirm the identification of Listeria monocytogenes
+if grep -q -i "listeria" "$output_folder/blast_results.tsv"; then
+    echo "SUCCESS!: BLAST succesfully identified Listeria monocytogenes!"
+else
+    echo "FAIL!: BLAST could not indentify Listeria monocytogenes."
+fi
