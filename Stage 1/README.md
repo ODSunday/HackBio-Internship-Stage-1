@@ -258,9 +258,9 @@ fi
 ```bash
 bash blast.sh                                                            # Performs BLAST.
 ```
-#### 7. Detecting Antimicrobial Resistance (AMR) genes with `Abricate`
+#### 7. Detecting antimicrobial resistance (AMR) genes with `abricate`
 The AMR genes in the identified causative organism was identified and summarized as follows:
-##### 7a. Detecting AMR Genes
+##### 7a. Detecting AMR genes
 ```bash
 nano amr_detection.sh                                                   # Writes the script for AMR genes detection.
 ```
@@ -291,7 +291,7 @@ echo "AMR analysis completed. Results saved in $output_dir."
 ```bash
 bash amr_detection.sh                                                   # Runs `abricate`.
 ```
-##### 7b. Summarizing AMR Profiles
+##### 7b. Summarizing AMR profiles
 ```bash
 nano amr_summary.sh                                                     # Script for summary report
 ```
@@ -327,7 +327,7 @@ echo "AMR profile summary saved to $summary_output_file"
 ```bash
 bash amr_summary.sh
 ```
-#### 8. Detecting Toxin Genes with `Abricate`
+#### 8. Detecting toxin genes with `abricate`
 Similar to AMR genes detection, the toxin genes in the organism were identified and summarized as follows:
 ##### 8a. Running `Abricate` to detect toxin genes from the `Virulent Factor Database (VFDB)`
 
@@ -398,7 +398,7 @@ bash toxin_summary.sh
 ### RESULTS
 This whole genome sequencing analysis pipeline clearly identified the causative organism of the South African Polony 2017 outbreak, and the AMR and toxin genes associated with this pathogen. This section of the report highlights the afforementioned key findings.
 #### a. Identification of the causative organism
-The BLAST result confirms *Listeria monocytogenes* as the causative organism of the food-borne infection. The table below shows the BLAST output of the top 10 hits. 
+##### Table 1: BLAST output of the top 10 hits confirming *Listeria monocytogenes* (100% identity) as the causative organism of the food-borne infection. 
 |Query Contig                      |Accession       |Percentage Identity |Description|
 |:--------------------------------:|:--------------:|:------------------:|:---------:|
 |NODE_1_length_482543_cov_54.434183|CP054040.1      |100.000              |Listeria monocytogenes strain PNUSAL000019 chromosome|
@@ -412,4 +412,19 @@ The BLAST result confirms *Listeria monocytogenes* as the causative organism of 
 |NODE_1_length_482543_cov_54.434183|CP063383.1      |100.000              |Listeria monocytogenes strain 18-04540 chromosome, complete genome|
 |NODE_1_length_482543_cov_54.434183|CP060526.1      |100.000              |Listeria monocytogenes strain OB080183 chromosome, complete genome|
 
+#### b. Identification of AMR genes
+Four different AMR genes were identified across all 50 samples, as shown in Table 2 below:
+##### Table 2: Summary of AMR genes across samples
+|AMR Gene|	Count|	Product|	Resistance|
+|:------:|:-----:|:-------:|:------------:|
+|lin     |50|*Listeria monocytogenes* EGD-e lin gene for lincomycin resistance ABC-F type ribosomal protection protein complete CDS.|Lincosamide|
+|norB    |50|NorB is a multidrug efflux pump in *Staphylococcus aureus* that confers resistance to fluoroquinolones and other structurally unrelated antibiotics like tetracycline. It shares 30% similarity with NorB and is a structural homolog of Blt of *Bacillus subtilis*. It is regulated by mgrA also known as NorR.|	Fluoroquinolone|
+|mprF    |50|MprF is a integral membrane protein that modifies the negatively-charged phosphatidylglycerol on the membrane surface. This confers resistance to cationic peptides that disrupt the cell membrane including defensins.|Peptide|
+|FosX    |50|FosX is an enzyme used to confer resistance to fosfomycin. It is dependent on the cofactor manganese (II) and uses water to generate a vicinal diol.|Fosfomycin|
 
+#### c. Identification of toxin genes
+Several toxin genes were detected in the samples. These include: 
+`plcA, plcB, hly, clpC, lpeA, clpE, bsh, clpP, iap/cwhA, oatA, vip, actA, lspA, lntA, lapB, lplA1, lap, pdgA, mpl, prfA, fbpA, gtcA, llsA, llsB, llsD, llsG, inlA, llsH, inlB, inlC, inlF, llsP, inlK, prsA2, llsX, llsY, hpt.`
+### PUBLIC HEALTH DISCUSSION
+#### a. Evidence-based antibiotics
+#### b. Public health implications
