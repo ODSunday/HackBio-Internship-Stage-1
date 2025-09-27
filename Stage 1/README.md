@@ -227,20 +227,17 @@ output_folder="blast_report"                                            # Define
 
 mkdir -p "$output_folder"                                               # Creates the output directory.
 
-# Define the path to the spades.py output directory
-spades_output="assembly" 
+spades_output="assembly"                                                # Defines the path to the spades.py output directory.
 
-# Define the path to the contig file
-contig_file="$spades_output/SRR27013333_Genome_Sequencing_of_Listeria_monocytogenes_SA_outbreak_2017_spades/contigs.fasta"
+contig_file="$spades_output/SRR27013333_Genome_Sequencing_of_Listeria_monocytogenes_SA_outbreak_2017_spades/contigs.fasta"  # Defines the path to the contig file.
 
-# Confirm the existence of the contig file
-if [[ ! -f "$contig_file" ]]; then
+if [[ ! -f "$contig_file" ]]; then                                      # Confirms the existence of the contig file.
     echo "Contig file NOT FOUND!: $contig_file"
     exit 1
 else
     echo "Contig file EXISTS!: $contig_file"
 fi
-
+# Netx steps:
 # Extract the first 100 contigs (i.e., extract the first 202 lines from the fasta file, since each contig consists of 2 lines: header + sequence).
 head -n 202 "$contig_file" | awk 'NR % 2 == 1 {print; getline; print}' > extracted_contigs.fasta
 
@@ -261,3 +258,4 @@ if grep -q -i "listeria" "$output_folder/blast_results.tsv"; then
 else
     echo "FAIL!: BLAST could not indentify Listeria monocytogenes."
 fi
+```
