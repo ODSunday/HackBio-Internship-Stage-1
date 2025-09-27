@@ -396,7 +396,20 @@ echo "Toxin gene summary saved to $summary_output_file"
 bash toxin_summary.sh
 ```
 ### RESULTS
-
-
+This whole genome sequencing analysis pipeline clearly identified the causative organism of the South African Polony 2017 outbreak, and the AMR and toxin genes associated with this pathogen. This section of the report highlights the afforementioned key findings.
+#### a. Identification of the causative organism
+The BLAST result confirms *Listeria monocytogenes* as the causative organism of the food-borne infection. The table below shows the BLAST output of the top 10 hits. 
+|Query Contig                      |Accession       |Percentage Identity |Description|
+|:--------------------------------:|:--------------:|:------------------:|:---------:|
+|NODE_1_length_482543_cov_54.434183|CP054040.1      |100.000              |Listeria monocytogenes strain PNUSAL000019 chromosome|
+|NODE_1_length_482543_cov_54.434183|CP196566.1      |100.000              |Listeria monocytogenes strain BL91/023 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP168832.1      |100.000              |Listeria monocytogenes strain N23-0953 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP096157.1      |100.000              |Listeria monocytogenes strain FSL F6-0366 (H7858) chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP110922.1      |100.000              |Listeria monocytogenes strain 11-04869 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP115044.1      |100.000              |Listeria monocytogenes strain MKELm224_2022 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP075871.1      |100.000              |Listeria monocytogenes strain 3BS29 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|LR999861.1      |100.000              |Listeria monocytogenes isolate QI0054 genome assembly, chromosome: 1|
+|NODE_1_length_482543_cov_54.434183|CP063383.1      |100.000              |Listeria monocytogenes strain 18-04540 chromosome, complete genome|
+|NODE_1_length_482543_cov_54.434183|CP060526.1      |100.000              |Listeria monocytogenes strain OB080183 chromosome, complete genome|
 
 
