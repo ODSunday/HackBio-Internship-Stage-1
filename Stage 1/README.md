@@ -63,7 +63,7 @@ However, there were few issues of concern in the quality assessment. For example
 These suggest potential problems with bais, contamination at specific base positions, library preparations, or sequencing, which may impair the reliability of downstream analyses. Therefore, the samples need trimming and filtering preprocessing to address these quality issues. 
 The sample preprocessing steps were performed as shown in the next section. 
 
-### 3. Trimming and filtering with `fastp`
+#### 3. Trimming and filtering with `fastp`
 The fastp was used to remove poor-quality bases, short reads or adapter contents, using the following commands:
 ```bash
 mkdir trimmed_samples                                            # Creates a new folder named 'trimmed_samples' for the fastp reports.
@@ -116,7 +116,7 @@ multiqc fastp_reports/ -o new_multiqc_reports/                 # Aggregates the 
 ```
 The aggregated fastp reports were thereafter downloaded and assessed to confirm improved quality.
 
-### 4. De novo assembly with `spades.py`
+#### 4. De novo assembly with `spades.py`
 De novo genome assembly was perform on trimmed reads using SPAdes genome assembler `spades.py` as follow:
 ```bash
 mkdir assembly                                                 # Creates a new folder named 'assembly'.
@@ -145,7 +145,7 @@ Running the `spades.py` command:
 bash assembler.sh                                                # Performs de novo genome assembly with `Spades.py`.
 ```
 The genome was successfully assembled, and the quality of the assembly was assessed with `quast.py` in the next section.
-### 5. Checking assembly quality with `quast.py`
+#### 5. Checking assembly quality with `quast.py`
 ```bash
 nano quast.sh                                                    # Writes the script containing the next set of commands.
 ```
@@ -153,7 +153,7 @@ nano quast.sh                                                    # Writes the sc
 ```bash
 #!/bin/bash
 
-mkdir quast_reports
+mkdir quast_reports                                              # Creates output directory
 
 for sample_dir in assembly/*/; do                                # Loops through each sample directory within assembly folder.
     sample=$(basename "$sample_dir")                             # Extracts the base name (sample name) of the sample directory.
@@ -179,24 +179,20 @@ nano quast_combined.sh                                            # Writes the s
 ```bash
 #!/bin/bash
 
-# Make an output directory.
-mkdir combined_quast_reports
+mkdir combined_quast_reports                                      # Makes an output directory.
 
-# Define an array to hold the paths to the contigs.fasta files.
-declare -a samples=()
+declare -a samples=()                                             # Defines an array to hold the paths to the contigs.fasta files.
 
-# Populate the array with paths to each contigs.fasta file.
-for sample_dir in assembly/*/; do
+for sample_dir in assembly/*/; do                                 # Populates the array with paths to each contigs.fasta file.
     samples+=("${sample_dir}contigs.fasta")
 done
 
-# Run quast on all samples at a go, using the array.
-quast.py -o combined_quast_reports "${samples[@]}"
+quast.py -o combined_quast_reports "${samples[@]}"                 # Runs quast on all samples at a go, using the array.
 ```
 ```bash
 bash quast_combined.sh                                               # Runs quast.
 ```
-### 6. Running blast on a selected sample to identity the organism 
+#### 6. Running `blast` on a selected sample to identity the organism 
 To conserve time and other resources, BLAST was performed on a selected sample to confirm the identity of the organism. The sample was selected based on the best N50 value, which directly relates to other quality metrics being in good shape.
 ```bash
 cd quast_reports                                                       # Navigates to the `quast` output directory
@@ -259,3 +255,148 @@ else
     echo "FAIL!: BLAST could not indentify Listeria monocytogenes."
 fi
 ```
+```bash
+bash blast.sh                                                            # Performs BLAST.
+```
+#### 7. Detecting Antimicrobial Resistance (AMR) genes with `Abricate`
+The AMR genes in the identified causative organism was identified and summarized as follows:
+##### 7a. Detecting AMR Genes
+```bash
+nano amr_detection.sh                                                   # Writes the script for AMR genes detection.
+```
+```bash
+#!/bin/bash
+
+# Define variables
+assembly_dir="assembly"                                                 # Folder containing assembled genomes.
+output_dir="amr_results"                                                # Output folder.
+amr_db="card"                                                           # Database (Comprehensive Antibiotic Resistance Database) to use for Abricate.
+
+# Next steps:
+# Create output folder
+mkdir -p $output_dir
+
+# Process the contigs.fasta file of each sample and run Abricate to detect AMR genes
+for sample_dir in $assembly_dir/*; do
+    contigs_file="$sample_dir/contigs.fasta"
+    if [[ -f "$contigs_file" ]]; then
+        abricate --db $amr_db --quiet "$contigs_file" > "$output_dir/$(basename $sample_dir)_amr_results.tsv"
+    else
+        echo "Warning: contigs.fasta not found in $sample_dir"
+    fi
+done
+
+echo "AMR analysis completed. Results saved in $output_dir."
+```
+```bash
+bash amr_detection.sh                                                   # Runs `abricate`.
+```
+##### 7b. Summarizing AMR Profiles
+```bash
+nano amr_summary.sh                                                     # Script for summary report
+```
+```bash
+#!/bin/bash
+
+# Define variables
+amr_results_dir="amr_results"                                           # Directory containing AMR result files
+summary_output_dir="amr_summary"
+summary_output_file="amr_summary/amr_summary.csv"                       # Output summary file
+
+# Create summary output folder
+mkdir -p $summary_output_dir
+
+# Create header for the summary output file
+echo "Gene,Count,Samples" > $summary_output_file
+
+# Confirm the existence of AMR results directory
+if [[ ! -d $amr_results_dir ]]; then
+    echo "AMR results directory not found!"
+    exit 1
+else
+    echo "AMR results directory exists. Proceed..."
+fi
+
+# Summarize AMR profiles from all sample result files
+awk 'BEGIN {FS="\t"; OFS=","}
+     NR > 1 {count[$6]++; samples[$6] = (samples[$6] ? samples[$6] ";" FILENAME : FILENAME)} 
+     END {for (gene in count) print gene, count[gene], samples[gene]}' $amr_results_dir/*_amr_results.tsv >> $summary_output_file
+
+echo "AMR profile summary saved to $summary_output_file"
+```
+```bash
+bash amr_summary.sh
+```
+#### 8. Detecting Toxin Genes with `Abricate`
+Similar to AMR genes detection, the toxin genes in the organism were identified and summarized as follows:
+##### 8a. Running `Abricate` to detect toxin genes from the `Virulent Factor Database (VFDB)`
+
+```bash
+nano toxin_analysis.sh                                          # Script for toxin analysis
+```
+```bash
+#!/bin/bash
+
+# Define variables
+assembly_dir="assembly"                                         # Folder containing assembled genomes.
+output_dir="toxin_results"                                      # Output folder.
+toxin_db="vfdb"                                                 # Database (Virulent Factor Database) to use for Abricate.
+
+# Create output directory
+mkdir -p $output_dir
+
+# Process the contigs.fasta file of each sample and run Abricate to detect toxin genes
+for sample_dir in $assembly_dir/*; do
+    contigs_file="$sample_dir/contigs.fasta"
+    if [[ -f "$contigs_file" ]]; then
+        abricate --db $toxin_db --quiet "$contigs_file" > "$output_dir/$(basename $sample_dir)_toxin_results.tsv"
+    else
+        echo "Warning: contigs.fasta not found in $sample_dir"
+    fi
+done
+
+echo "Toxin gene analysis completed. Results saved in $output_dir."
+```
+```bash
+bash toxin_analysis.sh
+```
+##### 8b. Summarize toxin results
+```bash
+nano toxin_summary.sh                                                 # Toxin summary script
+```
+```bash
+#!/bin/bash
+
+# Define variables
+toxin_results_dir="toxin_results"                                     # Directory containing toxin result files
+summary_output_dir="toxin_summary"
+summary_output_file="toxin_summary/toxin_summary.csv"                 # Output summary file
+
+# Create summary output folder
+mkdir -p $summary_output_dir
+
+# Create header for the summary output file
+echo "Toxin Gene,Count,Samples" > $summary_output_file
+
+# Check if toxin results directory exists
+if [[ ! -d $toxin_results_dir ]]; then
+    echo "Toxin results directory not found!"
+    exit 1
+else
+    echo "Toxin results directory exists. Proceed..."
+fi
+
+# Summarize toxin genes from all sample result files
+awk 'BEGIN {FS="\t"; OFS=","}
+     NR > 1 {count[$6]++; samples[$6] = (samples[$6] ? samples[$6] ";" FILENAME : FILENAME)} 
+     END {for (gene in count) print gene, count[gene], samples[gene]}' $toxin_results_dir/*_toxin_results.tsv >> $summary_output_file
+echo "Toxin gene summary saved to $summary_output_file"
+```
+```bash
+bash toxin_summary.sh
+```
+### RESULTS
+
+
+
+
