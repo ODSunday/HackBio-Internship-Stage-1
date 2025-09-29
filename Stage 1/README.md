@@ -1,6 +1,6 @@
 ## PORJECT 1 (MICROBES): WHOLE GENOME SEQUENCING ANALYSIS OF THE SOUTH AFRICAN POLONY OUTBREAK
 ### INTRODUCTION
-South Africa faced a serious public health problem in early 2017 due to a foodborne infection traced to polony, a processed cold meats. To confirm the identity and resistance profile of the infectious organism, whole genome sequencing (WGS) analysis becomes highly indispensable. Hence, this current project analyses WGS data from 100 bacterial isolates collected during the 2017–2018 South African outbreak, to:  
+South Africa faced a serious public health problem in early 2017 due to a foodborne infection traced to polony, a processed cold meat. To confirm the identity and resistance profile of the infectious organism, whole genome sequencing (WGS) analysis becomes highly indispensable. Hence, this current project analyses WGS data from 100 bacterial isolates collected during the 2017–2018 South African outbreak, to:  
 - Confirm the identity of the organism;
 - Determine the organism's antimicrobial resistance (AMR) profile.
 - Detect the presence of any toxin accelerating death rate.
