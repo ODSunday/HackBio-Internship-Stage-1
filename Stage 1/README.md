@@ -413,18 +413,32 @@ This whole genome sequencing analysis pipeline clearly identified the causative 
 |NODE_1_length_482543_cov_54.434183|CP060526.1      |100.000              |Listeria monocytogenes strain OB080183 chromosome, complete genome|
 
 #### b. Identification of AMR genes
-Four different AMR genes were identified across all 50 samples, as shown in Table 2 below:
+Four different AMR genes were identified from the Comprehensive Antibiotic Resistance Database (CARD), across all 50 samples as shown in Table 2 below:
 ##### Table 2: Summary of AMR genes across samples
 |AMR Gene|	Count|	Product|	Resistance|
 |:------:|:-----:|:-------:|:------------:|
-|lin     |50|*Listeria monocytogenes* EGD-e lin gene for lincomycin resistance ABC-F type ribosomal protection protein complete CDS.|Lincosamide|
-|norB    |50|NorB is a multidrug efflux pump in *Staphylococcus aureus* that confers resistance to fluoroquinolones and other structurally unrelated antibiotics like tetracycline. It shares 30% similarity with NorB and is a structural homolog of Blt of *Bacillus subtilis*. It is regulated by mgrA also known as NorR.|	Fluoroquinolone|
-|mprF    |50|MprF is a integral membrane protein that modifies the negatively-charged phosphatidylglycerol on the membrane surface. This confers resistance to cationic peptides that disrupt the cell membrane including defensins.|Peptide|
-|FosX    |50|FosX is an enzyme used to confer resistance to fosfomycin. It is dependent on the cofactor manganese (II) and uses water to generate a vicinal diol.|Fosfomycin|
+|lin     |50|*Listeria monocytogenes* EGD-e lin gene for lincomycin resistance ABC-F type ribosomal protection protein complete CDS.|lincosamide|
+|norB    |50|NorB is a multidrug efflux pump in *Staphylococcus aureus* that confers resistance to fluoroquinolones and other structurally unrelated antibiotics like tetracycline. It shares 30% similarity with NorB and is a structural homolog of Blt of *Bacillus subtilis*. It is regulated by mgrA also known as NorR.|	fluoroquinolone|
+|mprF    |50|MprF is a integral membrane protein that modifies the negatively-charged phosphatidylglycerol on the membrane surface. This confers resistance to cationic peptides that disrupt the cell membrane including defensins.|peptide|
+|FosX    |50|FosX is an enzyme used to confer resistance to fosfomycin. It is dependent on the cofactor manganese (II) and uses water to generate a vicinal diol.|fosfomycin|
 
 #### c. Identification of toxin genes
-Several toxin genes were detected in the samples. These include: 
+Several toxin genes were detected in the samples from the Virulence Factor Database (VFDB), summarised as follows include: 
 `plcA, plcB, hly, clpC, lpeA, clpE, bsh, clpP, iap/cwhA, oatA, vip, actA, lspA, lntA, lapB, lplA1, lap, pdgA, mpl, prfA, fbpA, gtcA, llsA, llsB, llsD, llsG, inlA, llsH, inlB, inlC, inlF, llsP, inlK, prsA2, llsX, llsY, hpt.`
 ### PUBLIC HEALTH DISCUSSION
-#### a. Evidence-based antibiotics
-#### b. Public health implications
+#### a. Public health implications
+The study identified four AMR genes - lin, norB, mprF, and FosX that are resistant against lincosamide, fluoroquinolone, peptide, and fosfomycin, respectively, which aligns with the studies (Feodorova et al., 2024). AMR enhances treatment failure, thus impeding the effective containment infection. Therefore, the presence of lin, norB, mprF, and FosX in *L. monocytogenes* identified in this analysis necessitates a well-designed future treatment options that would prevent treatment failure.
+More than 30 virulence factors (toxin genes) were identified in the analysized samples. This probably accounted for the high pathogenicity of *Listeria monocytogene*, with the South African 2017 outbreak producing the highest morbidity and fatality rates of listeriosis in the human history (Nwaiwu 2022). For example, previous studies show that oatA (O-acetyltransferase) aids immune evasion by increasing the resistance of bacterial cell wall to antimicrobial compounds (e.g. lysozyme), which favours the persistece of the bacterium in macrophages and its virulence in the host (Cossart and Lebreton, 2014). inlA and inlB on the other hand, encode internalins InlA and InlB that facilitate the invasion of *Listeria* into the host cells when internalins InlA and InlB interact with their respective host cell surface receptors, E-cadherin and Met, through the zipper mechanism (Cossart and Lebreton, 2014; Luque-Sastre et al., 2018).
+#### b. Evidence-based antibiotics
+Based on the AMR genes in *L. monocytogenes* identified in this analysis, the following antibiotics prescription could be potent treatment option: 
+- Ampicillin + gentamicin
+- 
+
+### COUNCLUSION
+*Listeria monocytogenes* was the infectious organism responsible for the South African 2017 polony outbreak. The large number of toxin (virulence) genes identified in *L. monocytogenes* accounts for its high pathogenicity. The presence of antimicrobial resistance genes in the causative organism may be responsible for treatment failure and ineffective management of the infection. Future treatment options should be well-designed to overcome reistance, thereby preventing treatment failure and future outbreaks.
+
+### REFERENCES
+- Nwaiwu, O. (2022). Comparative genome analysis of the first Listeria monocytogenes core genome multi-locus sequence types CT2050 AND CT2051 strains with their close relatives. *AIMS Microbiol*. 8(1):61–72. doi: 10.3934/microbiol.2022006.
+- Cossart, P., and Lebreton, A. (2014). A trip in the “New Microbiology” with the bacterial pathogen *Listeria monocytogenes*. *FEBS Letters*. 588. 1873-3468. doi: 10.1016/j.febslet.2014.05.051.
+- Luque-Sastre, L., Arroyo, C., Fox, E. M., McMahon, B. J, Bai, L., Li, F., and Fanning, S. (2018) Microbiol Spectr. 6(4). doi: 10.1128/microbiolspec.arba-0031-2017.
+- 
