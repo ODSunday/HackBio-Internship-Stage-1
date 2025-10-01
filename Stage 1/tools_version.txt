@@ -1,0 +1,20 @@
+FastQC Version:
+FastQC v0.12.1
+
+MultiQC Version:
+multiqc, version 1.30
+
+fastp Version:
+
+SPAdes Version:
+SPAdes v3.13.1
+
+QUAST Version:
+QUAST v5.3.0, fb88221c
+
+BLAST Version:
+blastn: 2.16.0+
+ Package: blast 2.16.0, build Nov 27 2024 09:40:57
+
+Abricate Version:
+abricate 1.0.1
